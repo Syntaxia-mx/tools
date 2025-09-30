@@ -84,7 +84,7 @@ export const Base64ToFile = () => {
             const url = URL.createObjectURL(blob);
 
             const a = document.createElement("a");
-            const ext = previewType ? fileType : "bin"; // Sin vista previa = .bin
+            const ext = previewType ? fileType : "bin";
             a.download = generateRandomName(ext);
             a.href = url;
             a.click();
@@ -102,9 +102,6 @@ export const Base64ToFile = () => {
     return (
         <motion.section
             className="min-h-screen bg-black text-white flex flex-col items-center justify-start px-6 py-20 relative"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
         >
 
 
@@ -135,7 +132,7 @@ export const Base64ToFile = () => {
                                 <FiDownload className="text-white w-5 h-5" />
                             </button>
                         )}
-                        {/* Botón para regresar a FileToBase64 */}
+
                         <button
                             onClick={handleSwitchTool}
                             className="p-2 rounded-full hover:bg-zinc-800 transition-colors"

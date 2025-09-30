@@ -62,7 +62,6 @@ export const Home = () => {
                 Explora nuestras herramientas diseñadas para aumentar tu productividad y facilitar tu trabajo como desarrollador.
             </motion.p>
 
-            {/* Categorías */}
             {tools.map((category, catIndex) => (
                 <div key={catIndex} className="mb-12 w-full max-w-6xl mx-auto">
                     <motion.h2

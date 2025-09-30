@@ -45,11 +45,7 @@ export const HexToText = () => {
     return (
         <motion.section
             className="min-h-screen bg-black text-white flex flex-col items-center justify-start px-6 py-20 relative"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
         >
-            {/* Toast animado */}
             <AnimatePresence>
                 {showToast && (
                     <motion.div
@@ -72,7 +68,6 @@ export const HexToText = () => {
             </p>
 
             <div className="w-full max-w-5xl flex flex-col md:flex-row gap-8">
-                {/* Input */}
                 <div className="w-full md:w-1/2 flex flex-col gap-2">
                     <div className="flex gap-2 mb-2">
                         <button
@@ -98,7 +93,6 @@ export const HexToText = () => {
                     />
                 </div>
 
-                {/* Output */}
                 <div className="w-full md:w-1/2 flex flex-col gap-2">
                     <div className="flex gap-2 mb-2">
                         <button

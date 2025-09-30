@@ -43,11 +43,7 @@ export const BytesToText = () => {
     return (
         <motion.section
             className="min-h-screen bg-black text-white flex flex-col items-center justify-start px-6 py-20 relative"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
         >
-            {/* Toast animado */}
             <AnimatePresence>
                 {showToast && (
                     <motion.div
@@ -70,7 +66,6 @@ export const BytesToText = () => {
             </p>
 
             <div className="w-full max-w-5xl flex flex-col md:flex-row gap-8">
-                {/* Input con botones fuera del textarea */}
                 <div className="w-full md:w-1/2 flex flex-col gap-2">
                     <div className="flex gap-2 mb-2">
                         <button
@@ -95,8 +90,6 @@ export const BytesToText = () => {
                         className="w-full h-[400px] p-6 rounded-xl bg-zinc-900 border border-zinc-800 text-white focus:outline-none focus:border-[#aa0000] resize-none text-lg font-mono placeholder-gray-500 overflow-auto scrollbar-none"
                     />
                 </div>
-
-                {/* Output con botón copiar fuera del textarea */}
                 <div className="w-full md:w-1/2 flex flex-col gap-2">
                     <div className="flex gap-2 mb-2">
                         <button

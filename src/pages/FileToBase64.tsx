@@ -19,7 +19,6 @@ export const FileToBase64 = () => {
         const reader = new FileReader();
         reader.onload = () => {
             const result = reader.result as string;
-            // Quitar prefijo "data:*/*;base64,"
             const base64 = result.split(",")[1];
             setOutput(base64);
         };
@@ -41,11 +40,7 @@ export const FileToBase64 = () => {
     return (
         <motion.section
             className="min-h-screen bg-black text-white flex flex-col items-center justify-start px-6 py-20 relative"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
         >
-            {/* Toast */}
             <AnimatePresence>
                 {showToast && (
                     <motion.div
@@ -67,7 +62,6 @@ export const FileToBase64 = () => {
                 Selecciona un archivo o arrástralo al área para obtener su cadena Base64.
             </p>
 
-            {/* Área de carga */}
             <div className="w-full max-w-3xl flex flex-col gap-4">
                 <label
                     htmlFor="fileInput"
@@ -84,7 +78,6 @@ export const FileToBase64 = () => {
                     onChange={handleFileChange}
                 />
 
-                {/* Output con botones */}
                 <div className="relative flex flex-col gap-2">
                     <div className="flex gap-2 mb-2">
                         <button

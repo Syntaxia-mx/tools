@@ -1,0 +1,176 @@
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FiTrash2, FiRepeat, FiCopy } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
+import { Footer } from "../components/Footer";
+
+const SHA_ALGOS = [
+    { value: "SHA-1", label: "SHA-1" },
+    { value: "SHA-256", label: "SHA-256" },
+    { value: "SHA-384", label: "SHA-384" },
+    { value: "SHA-512", label: "SHA-512" },
+];
+
+const arrayBufferToHex = (buffer: ArrayBuffer, upper = false) => {
+    const bytes = new Uint8Array(buffer);
+    const hex = Array.from(bytes)
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+    return upper ? hex.toUpperCase() : hex.toLowerCase();
+};
+
+export const ShaEncrypt = () => {
+    const [input, setInput] = useState("");
+    const [output, setOutput] = useState("");
+    const [algo, setAlgo] = useState("SHA-256");
+    const [upper, setUpper] = useState(false);
+    const [showToast, setShowToast] = useState(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        let active = true;
+
+        const compute = async () => {
+            if (!input) {
+                if (active) setOutput("");
+                return;
+            }
+
+            try {
+                const data = new TextEncoder().encode(input);
+                const hash = await crypto.subtle.digest(algo, data);
+                const hex = arrayBufferToHex(hash, upper);
+                if (active) setOutput(hex);
+            } catch (err) {
+                if (active) setOutput("Error calculando hash");
+                console.error(err);
+            }
+        };
+
+        compute();
+        return () => {
+            active = false;
+        };
+    }, [input, algo, upper]);
+
+    const handleClear = () => {
+        setInput("");
+        setOutput("");
+    };
+
+    const handleCopy = () => {
+        if (!output) return;
+        navigator.clipboard.writeText(output).then(() => {
+            setShowToast(true);
+            setTimeout(() => setShowToast(false), 2000);
+        });
+    };
+
+    const handleSwitchTool = () => {
+        navigate("/tools");
+    };
+
+    return (
+        <motion.section
+            className="min-h-screen bg-black text-white flex flex-col items-center justify-start px-6 py-20 relative"
+        >
+            <AnimatePresence>
+                {showToast && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="fixed top-5 left-1/2 transform -translate-x-1/2 bg-[#aa0000] text-white px-6 py-3 rounded-lg shadow-lg z-50"
+                    >
+                        Resultado copiado al portapapeles ✅
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-[#aa0000] text-center">
+                Cifrado SHA
+            </h1>
+
+            <p className="text-gray-400 mb-6 text-center max-w-3xl text-lg">
+                Escribe un texto y obtén su hash en tiempo real. Elige el algoritmo y el formato de salida.
+            </p>
+
+            <div className="flex flex-col md:flex-row items-center gap-6 mb-6">
+                <div className="flex items-center gap-2">
+                    <label htmlFor="algo" className="text-sm text-gray-300">
+                        Algoritmo:
+                    </label>
+                    <select
+                        id="algo"
+                        value={algo}
+                        onChange={(e) => setAlgo(e.target.value)}
+                        className="rounded-xl bg-zinc-900 border border-zinc-800 text-white p-2 focus:outline-none"
+                    >
+                        {SHA_ALGOS.map((a) => (
+                            <option key={a.value} value={a.value}>
+                                {a.label}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <label className="text-sm text-gray-300">Mayúsculas</label>
+                    <input
+                        type="checkbox"
+                        checked={upper}
+                        onChange={(e) => setUpper(e.target.checked)}
+                        className="w-4 h-4 accent-[#aa0000] bg-zinc-900 border-zinc-800 rounded"
+                    />
+                </div>
+            </div>
+
+            <div className="w-full max-w-5xl flex flex-col md:flex-row gap-8">
+                <div className="w-full md:w-1/2 flex flex-col gap-2">
+                    <div className="flex gap-2 mb-2">
+                        <button
+                            onClick={handleClear}
+                            className="p-2 rounded-full hover:bg-zinc-800 transition-colors"
+                            aria-label="Borrar contenido"
+                        >
+                            <FiTrash2 className="text-white w-5 h-5" />
+                        </button>
+                        <button
+                            onClick={handleSwitchTool}
+                            className="p-2 rounded-full hover:bg-zinc-800 transition-colors"
+                            aria-label="Cambiar herramienta"
+                        >
+                            <FiRepeat className="text-white w-5 h-5" />
+                        </button>
+                    </div>
+                    <textarea
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        placeholder="Escribe tu texto aquí..."
+                        className="w-full h-[400px] p-6 rounded-xl bg-zinc-900 border border-zinc-800 text-white focus:outline-none resize-none text-lg font-mono placeholder-gray-500 overflow-auto scrollbar-none"
+                    />
+                </div>
+
+                <div className="w-full md:w-1/2 flex flex-col gap-2">
+                    <div className="flex gap-2 mb-2">
+                        <button
+                            onClick={handleCopy}
+                            className="p-2 rounded-full hover:bg-zinc-800 transition-colors"
+                            aria-label="Copiar resultado"
+                        >
+                            <FiCopy className="text-white w-5 h-5" />
+                        </button>
+                    </div>
+                    <textarea
+                        value={output}
+                        readOnly
+                        placeholder="Hash resultante..."
+                        className="w-full h-[400px] p-6 rounded-xl bg-zinc-900 border border-zinc-800 text-white focus:outline-none resize-none text-sm font-mono placeholder-gray-500 overflow-auto scrollbar-none"
+                    />
+                </div>
+            </div>
+
+            <Footer />
+        </motion.section>
+    );
+};

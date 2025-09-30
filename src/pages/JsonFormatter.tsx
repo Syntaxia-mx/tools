@@ -1,34 +1,73 @@
-import { useState } from "react";
+import { useState, type JSX } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiTrash2, FiRepeat, FiCopy } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { FiTrash2, FiCopy } from "react-icons/fi";
 import { Footer } from "../components/Footer";
 
-export const TextToBase64 = () => {
+const highlightJSON = (json: string): JSX.Element[] => {
+    const regex =
+        /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g;
+
+    const parts: JSX.Element[] = [];
+    let lastIndex = 0;
+
+    json.replace(regex, (match, _p1, _p2, p3, _p4, offset) => {
+        if (lastIndex < offset) {
+            parts.push(<span key={offset + "-plain"}>{json.slice(lastIndex, offset)}</span>);
+        }
+
+        let className = "";
+        if (p3) className = "text-[#aa0000] font-semibold";
+        else if (/^"/.test(match)) className = "text-pink-400";
+        else if (/true|false/.test(match)) className = "text-yellow-400";
+        else if (/null/.test(match)) className = "text-gray-400 italic";
+        else className = "text-purple-400";
+
+        parts.push(<span key={offset} className={className}>{match}</span>);
+        lastIndex = offset + match.length;
+        return match;
+    });
+
+    if (lastIndex < json.length) {
+        parts.push(<span key={lastIndex + "-rest"}>{json.slice(lastIndex)}</span>);
+    }
+
+    return parts;
+};
+
+export const JsonFormatter = () => {
     const [input, setInput] = useState("");
     const [output, setOutput] = useState("");
     const [showToast, setShowToast] = useState(false);
-    const navigate = useNavigate();
+    const [error, setError] = useState("");
+
+    const prettify = (value: string) => {
+        try {
+            const parsed = JSON.parse(value);
+            const pretty = JSON.stringify(parsed, null, 4);
+            setOutput(pretty);
+            setError("");
+        } catch (err: any) {
+            setOutput("");
+            setError(err.message || "❌ JSON inválido.");
+        }
+    };
+
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const value = e.target.value;
         setInput(value);
-
-        try {
-            const encoded = btoa(value);
-            setOutput(encoded);
-        } catch {
-            setOutput("Texto inválido");
+        if (!value.trim()) {
+            setOutput("");
+            setError("");
+        } else {
+            prettify(value);
         }
     };
 
     const handleClear = () => {
         setInput("");
         setOutput("");
-    };
-
-    const handleSwitchTool = () => {
-        navigate("/base64-to-text");
+        setError("");
     };
 
     const handleCopy = () => {
@@ -39,10 +78,12 @@ export const TextToBase64 = () => {
         }
     };
 
+
+
+    const displayedOutput = output;
+
     return (
-        <motion.section
-            className="min-h-screen bg-black text-white flex flex-col items-center justify-start px-6 py-20 relative"
-        >
+        <motion.section className="min-h-screen bg-black text-white flex flex-col items-center justify-start px-6 py-20 relative">
             <AnimatePresence>
                 {showToast && (
                     <motion.div
@@ -57,14 +98,14 @@ export const TextToBase64 = () => {
             </AnimatePresence>
 
             <h1 className="text-4xl md:text-5xl font-bold mb-4 text-[#aa0000] text-center">
-                Texto a Base64
+                JSON Prettifier
             </h1>
 
             <p className="text-gray-400 mb-6 text-center max-w-3xl text-lg">
-                Escribe tu texto en el cuadro de abajo y obtén la cadena Base64 en tiempo real.
+                Formatea tu JSON para hacerlo legible.
             </p>
 
-            <div className="w-full max-w-5xl flex flex-col md:flex-row gap-8">
+            <div className="w-full max-w-6xl flex flex-col md:flex-row gap-8">
                 <div className="w-full md:w-1/2 flex flex-col gap-2">
                     <div className="flex gap-2 mb-2">
                         <button
@@ -74,23 +115,18 @@ export const TextToBase64 = () => {
                         >
                             <FiTrash2 className="text-white w-5 h-5" />
                         </button>
-                        <button
-                            onClick={handleSwitchTool}
-                            className="p-2 rounded-full hover:bg-zinc-800 transition-colors"
-                            aria-label="Cambiar a Base64 a Texto"
-                        >
-                            <FiRepeat className="text-white w-5 h-5" />
-                        </button>
+
                     </div>
                     <textarea
                         value={input}
                         onChange={handleChange}
-                        placeholder="Ingresa tu texto aquí..."
+                        placeholder='Ingresa aquí tu JSON...'
                         className="w-full h-[400px] p-6 rounded-xl bg-zinc-900 border border-zinc-800 text-white focus:outline-none focus:border-[#aa0000] resize-none text-lg font-mono placeholder-gray-500 overflow-auto scrollbar-none"
                     />
                 </div>
+
                 <div className="w-full md:w-1/2 flex flex-col gap-2">
-                    <div className="flex gap-2 mb-2">
+                    <div className="flex justify-between items-center gap-2 mb-2">
                         <button
                             onClick={handleCopy}
                             className="p-2 rounded-full hover:bg-zinc-800 transition-colors"
@@ -99,12 +135,17 @@ export const TextToBase64 = () => {
                             <FiCopy className="text-white w-5 h-5" />
                         </button>
                     </div>
-                    <textarea
-                        value={output}
-                        readOnly
-                        placeholder="Base64 generado..."
-                        className="w-full h-[400px] p-6 rounded-xl bg-zinc-900 border border-zinc-800 text-white focus:outline-none resize-none text-lg font-mono placeholder-gray-500 overflow-auto scrollbar-none"
-                    />
+
+                    <div className="w-full h-[400px] p-6 rounded-xl bg-zinc-900 border border-zinc-800 overflow-auto scrollbar-none font-mono text-sm whitespace-pre break-words">
+                        {error ? (
+                            <pre className="text-red-400 text-sm">{error}</pre>
+                        ) : displayedOutput ? (
+                            <>{highlightJSON(displayedOutput)}</>
+                        ) : (
+                            <span className="text-gray-500">Aquí verás el resultado...</span>
+                        )}
+                    </div>
+
                 </div>
             </div>
 

@@ -33,9 +33,6 @@ export const Base64ToPDF = () => {
     return (
         <motion.section
             className="min-h-screen bg-black text-white flex flex-col items-center justify-start px-6 py-20 relative"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
         >
 
 
@@ -47,7 +44,6 @@ export const Base64ToPDF = () => {
                 Ingresa tu Base64 de un PDF y visualízalo en tiempo real.
             </p>
 
-            {/* Área de Base64 y botones */}
             <div className="w-full max-w-5xl flex flex-col gap-4">
                 <div className="relative flex flex-col">
                     <div className="flex gap-2 mb-2">
@@ -67,7 +63,6 @@ export const Base64ToPDF = () => {
                     />
                 </div>
 
-                {/* Frame para mostrar el PDF */}
                 {pdfSrc && (
                     <iframe
                         src={pdfSrc}

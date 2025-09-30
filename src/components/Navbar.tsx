@@ -11,7 +11,7 @@ const categories = [
             { title: "Texto a Base64", link: "/text-to-base64" },
             { title: "Archivo a Base64", link: "/file-to-base64" },
             { title: "Base64 a Archivo", link: "/base64-to-file" },
-            { title: "Texto a Bytes[]", link: "/bytes-to-text" },
+            { title: "Texto a Bytes[]", link: "/text-to-bytes" },
             { title: "Bytes[] a Texto", link: "/bytes-to-text" },
             { title: "Byte[] a PDF", link: "/bytes-to-pdf" },
             { title: "Texto a Hex", link: "/text-to-hex" },
@@ -40,7 +40,6 @@ export const Navbar = () => {
 
     return (
         <nav className="fixed top-0 left-0 w-full z-50 bg-black/95 backdrop-blur-sm border-b border-zinc-800 px-6 py-3 flex items-center justify-between">
-            {/* Logo */}
             <button
                 onClick={() => navigate("/")}
                 aria-label="Ir al inicio"
@@ -49,7 +48,6 @@ export const Navbar = () => {
                 <img src={logo} alt="Logo de Syntaxia" className="h-10 md:h-12 object-contain" />
             </button>
 
-            {/* Categorías */}
             <div className="hidden md:flex gap-6 items-center">
                 {categories.map((cat) => (
                     <div key={cat.name} className="relative">
@@ -61,7 +59,6 @@ export const Navbar = () => {
                             {cat.name}
                         </button>
 
-                        {/* Dropdown */}
                         <AnimatePresence>
                             {openCategory === cat.name && (
                                 <motion.div

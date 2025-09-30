@@ -3,10 +3,9 @@ import { SiTiktok, SiWhatsapp } from "react-icons/si";
 
 export const Footer = () => {
     return (
-        <footer className="bg-black text-gray-400 py-10 px-6 border-t border-zinc-800">
+        <footer className="bg-black text-gray-400 py-10 px-6 border-t border-zinc-800 mt-10">
             <h3 className="sr-only">Contacto y redes sociales de Syntaxia</h3>
 
-            {/* Redes sociales centradas */}
             <div className="flex justify-center gap-6 text-2xl">
                 <a
                     href="https://wa.me/5659747942"
@@ -55,7 +54,6 @@ export const Footer = () => {
                 </a>
             </div>
 
-            {/* Texto centrado */}
             <div className="text-center text-sm text-gray-500 mt-6">
                 © {new Date().getFullYear()} Syntaxia MX. Todos los derechos reservados.
             </div>

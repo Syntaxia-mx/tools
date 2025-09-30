@@ -18,7 +18,6 @@ export const BytesToPDF = () => {
         }
 
         try {
-            // Convertir string de bytes a Uint8Array
             const byteArray = value.split(",").map(s => parseInt(s.trim(), 10));
             const uint8Array = new Uint8Array(byteArray);
             const blob = new Blob([uint8Array], { type: "application/pdf" });
@@ -47,9 +46,6 @@ export const BytesToPDF = () => {
     return (
         <motion.section
             className="min-h-screen bg-black text-white flex flex-col items-center justify-start px-6 py-20 relative"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
         >
             <AnimatePresence>
                 {showToast && (

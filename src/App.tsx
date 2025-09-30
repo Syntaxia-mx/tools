@@ -12,6 +12,11 @@ import { TextToHex } from "./pages/TextToHex";
 import { Base64ToPDF } from "./pages/Base64ToPDF";
 import { Base64ToFile } from "./pages/Base64ToFile";
 import { BytesToPDF } from "./pages/BytesToPDF";
+import { ShaEncrypt } from "./pages/ShaEncrypt";
+import { PasswordGenerator } from "./pages/PasswordGenerator";
+import { JsonFormatter } from "./pages/JsonFormatter";
+import { XmlFormatter } from "./pages/XmlFormatter";
+import { QrGenerator } from "./pages/QrGenerator";
 
 function App() {
   return (
@@ -30,11 +35,11 @@ function App() {
         <Route path="/base64-to-pdf" element={<Base64ToPDF />} />
         <Route path="/base64-to-file" element={<Base64ToFile />} />
         <Route path="/bytes-to-pdf" element={<BytesToPDF />} />
-        <Route path="/sha-encrypt" element={<div>SHA Cifrado</div>} />
-        <Route path="/password-generator" element={<div>Generador de Contraseñas</div>} />
-        <Route path="/json-prettifier" element={<div>JSON Prettifier</div>} />
-        <Route path="/xml-prettifier" element={<div>XML Prettifier</div>} />
-        <Route path="/generate-qr" element={<div>Generar QR</div>} />
+        <Route path="/sha-encrypt" element={<ShaEncrypt />} />
+        <Route path="/password-generator" element={<PasswordGenerator />} />
+        <Route path="/json-prettifier" element={<JsonFormatter />} />
+        <Route path="/xml-prettifier" element={<XmlFormatter />} />
+        <Route path="/generate-qr" element={<QrGenerator />} />
       </Routes>
     </>
   );
